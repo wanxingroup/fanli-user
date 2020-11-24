@@ -1,0 +1,3 @@
+package errorcode
+
+const ()

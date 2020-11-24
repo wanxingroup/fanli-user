@@ -1,0 +1,190 @@
+syntax = "proto3";
+
+package user.pkg.rpc.protos;
+
+option go_package = "protos";
+
+import "user_common.proto";
+
+service UserController {
+    // 用户列表
+    rpc GetUserList (GetUserListRequest) returns (GetUserListReply) {
+    }
+    // 绑定用户手机号
+    rpc BindMobile (BindMobileRequest) returns (BindMobileReply) {
+    }
+    // 获取用户会员信息
+    rpc GetUserInfo (GetUserInfoRequest) returns (GetUserInfoReply) {
+    }
+    // 设置用户会员信息
+    rpc ModifyUserInfo (ModifyUserInfoRequest) returns (ModifyUserInfoReply) {
+    }
+    // 根据用户 OpenId 获取用户信息
+    rpc GetUserInfoByOpenId (GetUserInfoByOpenIdRequest) returns (GetUserInfoByOpenIdReply) {
+    }
+    // 登录用户操作（跟根据 OpenId 获取用户信息的不同在于，如果用户不存在，就会生成新的用户 ID）
+    rpc Login (LoginRequest) returns (LoginReply) {
+    }
+    // 加/扣积分
+    rpc ModifyUserPoint(ModifyUserPointRequest) returns (ModifyUserPointReply){
+    }
+    // 设置邀请者（上线）
+    rpc SetInviter(SetInviterRequest) returns (SetInviterReply) {
+    }
+}
+
+message GetUserListRequest {
+    // 页码
+    uint64 page = 1;
+    // 分页大小
+    uint64 PageSize = 2;
+    // 搜索条件（手机号）
+    string mobile = 3;
+    // 搜索条件（性别）
+    uint64 gender = 4;
+    // 搜索条件（用户注册开始时间）
+    string regStartTime = 5;
+    // 搜索条件（用户注册结束时间）
+    string regEndTime = 6;
+    // 搜索条件（店铺 ID）
+    uint64 shopId = 7;
+    // 搜索条件 用户 IDs
+    repeated uint64 userIds = 8;
+    // 搜索条件 用户昵称
+    string userName = 9;
+}
+
+// 用户信息
+message UserInfo {
+    // 用户 ID
+    uint64 userId = 1;
+    // 手机号
+    string mobile = 2;
+    // 用户名称
+    string name = 3;
+    // 用户性别
+    uint64 gender = 4;
+    // 用户生日
+    string birthday = 5;
+    // 微信 OpenID
+    string openId = 6;
+    // 创建时间（注册时间）
+    string createdAt = 7;
+    // 积分
+    uint64 point = 8;
+    // 邀请者类型
+    uint32 inviterType = 9;
+    // 邀请者ID
+    uint64 inviterId = 10;
+    // 用户头像
+    string headImage = 11;
+}
+
+message GetUserListReply {
+    // 错误信息
+    Error err = 1;
+    // 用户列表
+    repeated UserInfo UserInfoList = 2;
+    // 总数量
+    uint64 count = 3;
+}
+
+message BindMobileRequest {
+    // 店铺 ID
+    uint64 shopId = 1;
+    // 手机号
+    string mobile = 2;
+    // 用户 ID
+    uint64 userId = 3;
+}
+
+message BindMobileReply {
+    // 用户信息
+    UserInfo UserInfo = 1;
+    // 错误信息
+    Error err = 2;
+}
+
+message GetUserInfoRequest {
+    // 用户 ID
+    uint64 userId = 1;
+    // 店铺 ID
+    uint64 shopId = 2;
+}
+
+message GetUserInfoReply {
+    // 用户信息
+    UserInfo UserInfo = 1;
+    // 错误信息
+    Error err = 2;
+}
+
+message ModifyUserInfoRequest {
+    // 用户信息
+    UserInfo UserInfo = 1;
+}
+
+message ModifyUserInfoReply {
+    // 错误信息
+    Error err = 1;
+}
+
+message SetInviterRequest {
+    uint64 userId = 1;
+}
+
+message SetInviterReply {
+    Error err = 1;
+    uint32 inviterType = 2;
+    uint64 inviterId = 3;
+}
+
+message GetUserInfoByOpenIdRequest {
+    // 微信 OpenID
+    string openId = 1;
+    // 店铺 ID
+    uint64 shopId = 2;
+}
+
+message GetUserInfoByOpenIdReply {
+    // 用户信息
+    UserInfo UserInfo = 1;
+    // 错误信息
+    Error err = 2;
+}
+
+message LoginRequest {
+    // 微信 OpenID
+    string openId = 1;
+    // 店铺 ID
+    uint64 shopId = 2;
+    // 邀请码
+    string inviterCode = 3;
+}
+
+message LoginReply {
+    // 用户信息
+    UserInfo UserInfo = 1;
+    // 错误信息
+    Error err = 2;
+}
+
+message ModifyUserPointRequest{
+    // 用户 ID
+    uint64 userId = 1;
+    // 备注
+    string remark = 2;
+    // 关联的订单 Id
+    uint64 orderId = 3;
+    // 修改对应积分
+    uint64 point = 4;
+    // 操作类型
+    uint32 type = 5;
+}
+
+message ModifyUserPointReply{
+    // 用户修改后的积分
+    uint64 Point = 1;
+    // 错误信息
+    Error err = 2;
+}
